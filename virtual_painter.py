@@ -103,7 +103,7 @@ while cap.isOpened():
 
             if drawing_finger_y < 75 :
                 if drawing_finger_x > 0 and drawing_finger_x <= 74:
-                    cv2.putText(img, "ABODJI Kondi Kaled", (50, 100), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 2)
+                    cv2.putText(img, "ABODJI Kondi Kaled", (50, 200), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 2)
 
                 elif drawing_finger_x > 75 and drawing_finger_x <= 175:
                     drawing_color = (255,0,0)
