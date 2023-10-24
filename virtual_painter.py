@@ -90,9 +90,10 @@ while cap.isOpened():
             control_lenth = math.hypot(thumb_x - drawing_finger_x, thumb_y - drawing_finger_y)
             drawing_point_size = np.interp(control_lenth, [min_hand, max_hand], [min_drawing_size, max_drawing_size])
             drawing_point_size = int(drawing_point_size)
-        # Picture taking
-        if all(fingers_state[:3]) and not fingers_state[4]:
-            cv2.putText(img, "SAVING BOARD", (50, 100), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 2)
+        # Picture taking all(fingers_state[0:3])
+
+        if  fingers_state[0] and fingers_state[1] and fingers_state[2] and fingers_state[3] and not fingers_state[4]:
+            cv2.putText(img, "SAVING ARTWORK", (50, 100), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 2)
 
             cv2.circle(img, (lm_2dim_position[4][1], lm_2dim_position[4][2] ), 15, (255, 0, 255), cv2.FILLED)
             cv2.circle(img, (lm_2dim_position[8][1], lm_2dim_position[8][2] ), 15, (255, 0, 255), cv2.FILLED)
@@ -103,7 +104,7 @@ while cap.isOpened():
             PICTURE_TAKEN = True
             
         # Drawing mode
-        elif fingers_state[1] and not fingers_state[2] and not fingers_state[4]:
+        if fingers_state[1] and not fingers_state[2] and not fingers_state[3] and not fingers_state[4]:
             if PICTURE_TAKEN:
                 BOARD_NUM+=1
             if drawing_finger_y > 76 :
@@ -115,7 +116,7 @@ while cap.isOpened():
                 drawing_prev_point_x, drawing_prev_point_y = drawing_finger_x, drawing_finger_y
         
         
-        if fingers_state[1] and fingers_state[2] and not fingers_state[4]: # Selection mode
+        if fingers_state[1] and fingers_state[2] and not fingers_state[3] and not fingers_state[4]: # Selection mode
             # 0px : 74 px | 75- 175| 176-276 | 277-377 | 378-478
             cv2.putText(img, "SELECTION MODE", (50, 100), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 2)
             drawing_prev_point_x, drawing_prev_point_y = 0,0
