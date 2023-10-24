@@ -1,12 +1,15 @@
 import cv2
-import mediapipe
+#import mediapipe
 import numpy as np
 import time
 import os
 import math
 from hand_tracking_module import HandDetector
 
+
 # Initialisations
+BOARD_NAME = "boards_folder/virtual_bord"
+BOARD_NUM = 0
 cap  = cv2.VideoCapture(0)
 windw_heigh = 640
 windw_width = 480
@@ -38,6 +41,7 @@ active_title_list = ["Blue Brush", "Ereaser", "Green Brush", "Pink Brush"]
 active_title = active_title_list[0]
 drawing_prev_point_x, drawing_prev_point_y = 0,0
 
+
 # Settings
 
 # Limite size
@@ -50,6 +54,8 @@ max_drawing_size = 50
 
 
 while cap.isOpened():
+    PICTURE_TAKEN = False
+
     cv2.waitKey(10)
     success, img = cap.read()
     img = cv2.flip(img, 1)
@@ -69,7 +75,6 @@ while cap.isOpened():
         drawing_finger_x, drawing_finger_y = lm_2dim_position[8][1:]
 
         #setting mode
-
         if fingers_state[4]:
             cv2.putText(img, "SETTING MODE", (50, 100), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 136, 255), 2)
             setting_finger_x, setting_finger_y = lm_2dim_position[20][1:]
@@ -85,8 +90,22 @@ while cap.isOpened():
             control_lenth = math.hypot(thumb_x - drawing_finger_x, thumb_y - drawing_finger_y)
             drawing_point_size = np.interp(control_lenth, [min_hand, max_hand], [min_drawing_size, max_drawing_size])
             drawing_point_size = int(drawing_point_size)
+        # Picture taking
+        if all(fingers_state[:3]) and not fingers_state[4]:
+            cv2.putText(img, "SAVING BOARD", (50, 100), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 2)
+
+            cv2.circle(img, (lm_2dim_position[4][1], lm_2dim_position[4][2] ), 15, (255, 0, 255), cv2.FILLED)
+            cv2.circle(img, (lm_2dim_position[8][1], lm_2dim_position[8][2] ), 15, (255, 0, 255), cv2.FILLED)
+            cv2.circle(img, (lm_2dim_position[12][1], lm_2dim_position[12][2] ), 15, (255, 0, 255), cv2.FILLED)
+            cv2.circle(img, (lm_2dim_position[16][1], lm_2dim_position[16][2] ), 15, (255, 0, 255), cv2.FILLED)
+
+            cv2.imwrite(BOARD_NAME+str(BOARD_NUM)+".png", img_canevas)
+            PICTURE_TAKEN = True
+            
         # Drawing mode
-        if fingers_state[1] and not fingers_state[2] and not fingers_state[4]:
+        elif fingers_state[1] and not fingers_state[2] and not fingers_state[4]:
+            if PICTURE_TAKEN:
+                BOARD_NUM+=1
             if drawing_finger_y > 76 :
                 cv2.circle(img, (drawing_finger_x, drawing_finger_y), drawing_point_size, drawing_color, cv2.FILLED)
                 if drawing_prev_point_x==0 and drawing_prev_point_y==0:
