@@ -52,9 +52,10 @@ max_hand = 160
 min_drawing_size = 5
 max_drawing_size = 50
 
+PICTURE_TAKEN = False
 
 while cap.isOpened():
-    PICTURE_TAKEN = False
+    
 
     cv2.waitKey(10)
     success, img = cap.read()
@@ -101,12 +102,15 @@ while cap.isOpened():
             cv2.circle(img, (lm_2dim_position[16][1], lm_2dim_position[16][2] ), 15, (255, 0, 255), cv2.FILLED)
 
             cv2.imwrite(BOARD_NAME+str(BOARD_NUM)+".png", img_canevas)
+            #print(BOARD_NAME)
             PICTURE_TAKEN = True
             
         # Drawing mode
         if fingers_state[1] and not fingers_state[2] and not fingers_state[3] and not fingers_state[4]:
             if PICTURE_TAKEN:
                 BOARD_NUM+=1
+                PICTURE_TAKEN = False
+                print(BOARD_NUM)
             if drawing_finger_y > 76 :
                 cv2.circle(img, (drawing_finger_x, drawing_finger_y), drawing_point_size, drawing_color, cv2.FILLED)
                 if drawing_prev_point_x==0 and drawing_prev_point_y==0:
@@ -149,7 +153,7 @@ while cap.isOpened():
                     active_title = active_title_list[1]
 
             assist_finger_x, assist_finger_y = lm_2dim_position[12][1:]
-            cv2.circle(img, (int((drawing_finger_x+assist_finger_x)/2), int((drawing_finger_y+assist_finger_y)/2)), 25, (255,128,0), cv2.FILLED)
+            cv2.circle(img, (int((drawing_finger_x+assist_finger_x)/2), int((drawing_finger_y+assist_finger_y)/2)), drawing_point_size, (255,128,0), cv2.FILLED)
 
 
     img_gray = cv2.cvtColor(img_canevas,cv2.COLOR_BGR2GRAY)
