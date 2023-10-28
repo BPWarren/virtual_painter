@@ -15,7 +15,7 @@ Virtual Painter is an application that makes digital art a natural and immersive
 - Customizable Brushes
 
 # USAGE
-Virtual painter has 3 modes :
+Virtual painter has 4 modes :
 
 ## SELECTION MODE
 It allows you to chose the brush color or the eraser.  
